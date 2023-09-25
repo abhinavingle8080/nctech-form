@@ -109,3 +109,7 @@ code {
     font-size: 40px;
     font-weight: bolder;
 }
+
+@media (max-width: 600px) {
+    width: 100%;
+}

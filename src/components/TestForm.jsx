@@ -8,6 +8,7 @@ export default function TestForm() {
     const [timeRemaining, setTimeRemaining] = useState(600);
     const [isTimerStarted, setIsTimerStarted] = useState(false);
     const [isTimerOver, setIsTimerOver] = useState(false);
+    const [isTestSeen, setIsTestSeen] = useState(false);
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -78,6 +79,7 @@ export default function TestForm() {
 
 
     const startTimer = () => {
+        setIsTestSeen(true);
         setIsTimerStarted(true);
     };
 
@@ -167,40 +169,42 @@ export default function TestForm() {
                             <button type="button" className="next-btn" onClick={startTimer}>Start Test</button>
                         </div>
                     </div>
-                    <div className="c-questions">
-                        <h3>Question 1:</h3>
-                        <p>What does the break statement do in a C loop?</p>
-                        <input type="radio" id="q1_option1" name="q1" onChange={handleChange} value="option1"/>
-                        <label htmlFor="q1_option1">Exits the loop and continues with the next
-                            iteration.</label>
+                    {isTestSeen && (
+                        <>
+                        <div className="c-questions">
+                            <h3>Question 1:</h3>
+                            <p>What does the break statement do in a C loop?</p>
+                            <input type="radio" id="q1_option1" name="q1" onChange={handleChange} value="option1"/>
+                            <label htmlFor="q1_option1">Exits the loop and continues with the next
+                                iteration.</label>
 
-                        <input type="radio" id="q1_option2" name="q1" onChange={handleChange} value="option2"/>
-                        <label htmlFor="q1_option2">Exits the loop and terminated the loop entirely.</label>
+                            <input type="radio" id="q1_option2" name="q1" onChange={handleChange} value="option2"/>
+                            <label htmlFor="q1_option2">Exits the loop and terminated the loop entirely.</label>
 
-                        <input type="radio" id="q1_option3" name="q1" onChange={handleChange} value="option3"/>
-                        <label htmlFor="q1_option3">Continues to the next iteration of the loop.</label>
+                            <input type="radio" id="q1_option3" name="q1" onChange={handleChange} value="option3"/>
+                            <label htmlFor="q1_option3">Continues to the next iteration of the loop.</label>
 
-                        <input type="radio" id="q1_option4" name="q1" onChange={handleChange} value="option4"/>
-                        <label htmlFor="q1_option4">Resets the loop to its initial state.</label>
+                            <input type="radio" id="q1_option4" name="q1" onChange={handleChange} value="option4"/>
+                            <label htmlFor="q1_option4">Resets the loop to its initial state.</label>
 
-                        <h3>Question 2:</h3>
-                        <p>Which of the following data types in C is used to store characters?</p>
-                        <input type="radio" id="q2_option1" name="q2" onChange={handleChange} value="option1"/>
-                        <label htmlFor="q2_option1">int</label>
+                            <h3>Question 2:</h3>
+                            <p>Which of the following data types in C is used to store characters?</p>
+                            <input type="radio" id="q2_option1" name="q2" onChange={handleChange} value="option1"/>
+                            <label htmlFor="q2_option1">int</label>
 
-                        <input type="radio" id="q2_option2" name="q2" onChange={handleChange} value="option2"/>
-                        <label htmlFor="q2_option2">float</label>
+                            <input type="radio" id="q2_option2" name="q2" onChange={handleChange} value="option2"/>
+                            <label htmlFor="q2_option2">float</label>
 
-                        <input type="radio" id="q2_option3" name="q2" onChange={handleChange} value="option3"/>
-                        <label htmlFor="q2_option3">char</label>
+                            <input type="radio" id="q2_option3" name="q2" onChange={handleChange} value="option3"/>
+                            <label htmlFor="q2_option3">char</label>
 
-                        <input type="radio" id="q2_option4" name="q2" onChange={handleChange} value="option4"/>
-                        <label htmlFor="q2_option4">boolean</label>
-                        {/*<div className="nav-btn">*/}
-                        {/*    <button className="previous-btn">previous</button>*/}
-                        {/*    <button type="button" className="next-btn" >Next</button>*/}
-                        {/*</div>*/}
-                    </div>
+                            <input type="radio" id="q2_option4" name="q2" onChange={handleChange} value="option4"/>
+                            <label htmlFor="q2_option4">boolean</label>
+                            {/*<div className="nav-btn">*/}
+                            {/*    <button className="previous-btn">previous</button>*/}
+                            {/*    <button type="button" className="next-btn" >Next</button>*/}
+                            {/*</div>*/}
+                        </div>
 
                     <div className="java-questions">
                         <h3>Question 3:</h3>
@@ -428,7 +432,9 @@ export default function TestForm() {
                             htmlFor="q10_option4">6
                             hours</label>
                     </div>
-                    <button type="submit" onClick={handleSubmit}>Submit</button>
+                    <button type="submit" className="submit-btn" onClick={handleSubmit}>Submit</button>
+                        </>)}
+
                 </form>
             </div>
         </>
