@@ -23,7 +23,7 @@ export default function TestForm() {
         q9: '',
         q10: '',
         time: 0,
-        result: ''
+        result: 0
     });
 
     const correctAnswers = {
@@ -50,7 +50,7 @@ export default function TestForm() {
 
         Object.keys(correctAnswers).forEach((question) => {
             if (formData[question] === correctAnswers[question]) {
-                formData.result += 1;
+                formData.result = (Number)(formData.result + 1);
             }
         });
 
