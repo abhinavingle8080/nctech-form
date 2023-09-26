@@ -6,6 +6,7 @@ import axios from "axios";
 
 export default function TestForm() {
     const [timeRemaining, setTimeRemaining] = useState(600);
+    const [errors, setErrors] = useState({});
     const [isTimerStarted, setIsTimerStarted] = useState(false);
     const [isTimerOver, setIsTimerOver] = useState(false);
     const [isTestSeen, setIsTestSeen] = useState(false);
@@ -46,7 +47,7 @@ export default function TestForm() {
         const {name, value} = event.target;
         setFormData({...formData, [name]: value});
 
-
+        validateField(name, value);
     }
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -135,6 +136,30 @@ export default function TestForm() {
             });
     };
 
+    const validateField = (name, value) => {
+        let error = "";
+        switch (name) {
+            case "name":
+                if (value.trim() === "") {
+                    error = "Name is required";
+                }
+                break;
+            case "email":
+                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+                    error = "Enter a Valid email";
+                }
+                break;
+            case "contact":
+                if (value.trim() === "") {
+                    error = "contact is required";
+                }
+                break;
+            default:
+                break;
+        }
+        setErrors({ ...errors, [name]: error });
+    };
+
     return (
         <>
             {isTimerStarted && (<div className="timer">
@@ -164,14 +189,21 @@ export default function TestForm() {
                     {pageVisible && (
                         <div className="student-info">
                         <label htmlFor="name">Name:</label>
-                        <input type="text" id="name" name="name" onChange={handleChange} value={formData.name}/>
-
+                        <input type="text" id="name" name="name" onChange={handleChange} value={formData.name} required/>
+                            {errors.name && (
+                                <div className="error">{errors.name}</div>
+                            )}
                         <label htmlFor="email">Email:</label>
-                        <input type="text" id="email" name="email" onChange={handleChange} value={formData.email}/>
-
+                        <input type="text" id="email" name="email" onChange={handleChange} value={formData.email} required/>
+                            {errors.email && (
+                                <div className="error">{errors.email}</div>
+                            )}
                         <label htmlFor="contact">Contact No.:</label>
                         <input type="text" id="contact" name="contact" onChange={handleChange}
-                               value={formData.contact}/>
+                               value={formData.contact} required/>
+                            {errors.contact && (
+                                <div className="error">{errors.contact}</div>
+                            )}
                         <div className="nav-btn">
                             <button type="button" className="next-btn" onClick={startTimer}>Start Test</button>
                         </div>

@@ -146,6 +146,11 @@ code {
     background-color: #0056b3;
 }
 
+.error{
+    color : red;
+    margin-top: -14px;
+}
+
 
 @media (max-width: 600px) {
 
@@ -160,5 +165,9 @@ code {
         margin: 0 auto;
         padding: 20px;
         width: 370px;
+    }
+    .error{
+        color : red;
+        margin-top: -14px;
     }
 }
