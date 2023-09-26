@@ -116,9 +116,9 @@ export default function TestForm() {
     }, [isTimerStarted, timeRemaining]);
 
     const sendEmail = () => {
-        const emailService = 'service_7jnl14s';
-        const emailTemplate = 'template_eh24x34';
-        const publicKey = 'k1v0FLc-9rb5d4uuU';
+        const emailService = 'service_t33fhl5';
+        const emailTemplate = 'template_7eak69o';
+        const publicKey = 'FOAVB-jIi70KcBSWP';
 
         const templateParams = {
             from_name: 'Non Criterion Technology',
