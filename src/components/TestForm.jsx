@@ -9,6 +9,8 @@ export default function TestForm() {
     const [isTimerStarted, setIsTimerStarted] = useState(false);
     const [isTimerOver, setIsTimerOver] = useState(false);
     const [isTestSeen, setIsTestSeen] = useState(false);
+    const [isSubmitted, setIsSubmitted] = useState(false);
+    const [pageVisible, setPageVisible] = useState(true);
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -48,7 +50,8 @@ export default function TestForm() {
     }
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+        setIsTestSeen(false);
+        setIsTimerStarted(false);
         Object.keys(correctAnswers).forEach((question) => {
             if (formData[question] === correctAnswers[question]) {
                 formData.result = (Number)(formData.result + 1);
@@ -68,6 +71,8 @@ export default function TestForm() {
 
             if (response.status === 201) {
                 console.log('Submission successful');
+                setIsSubmitted(true);
+                setPageVisible(false);
                 sendEmail();
             } else {
                 console.error('Submission failed');
@@ -132,7 +137,7 @@ export default function TestForm() {
 
     return (
         <>
-            <div className="timer">
+            {isTimerStarted && (<div className="timer">
                 <CountdownCircleTimer
                     duration={timeRemaining}
                     colors={[['#007bff', 0.33]]}
@@ -152,10 +157,12 @@ export default function TestForm() {
                         </div>
                     )}
                 </CountdownCircleTimer>
-            </div>
+            </div>)}
+
             <div className="form-body">
                 <form className="form">
-                    <div className="student-info">
+                    {pageVisible && (
+                        <div className="student-info">
                         <label htmlFor="name">Name:</label>
                         <input type="text" id="name" name="name" onChange={handleChange} value={formData.name}/>
 
@@ -168,7 +175,8 @@ export default function TestForm() {
                         <div className="nav-btn">
                             <button type="button" className="next-btn" onClick={startTimer}>Start Test</button>
                         </div>
-                    </div>
+                    </div>)}
+
                     {isTestSeen && (
                         <>
                         <div className="c-questions">
@@ -434,8 +442,17 @@ export default function TestForm() {
                     </div>
                     <button type="submit" className="submit-btn" onClick={handleSubmit}>Submit</button>
                         </>)}
-
+                    {isSubmitted && (<>
+                        <div className="thank-you-container">
+                            <h1 className="thank-you-title">Thank You!</h1>
+                            <p className="thank-you-message">Your submission has been received.</p>
+                            <a href="https://www.noncriteriontechnology.com/?i=1" className="thank-you-link">Visit Website</a>
+                        </div>
+                    </>)}
                 </form>
+
+
+
             </div>
         </>
     )
