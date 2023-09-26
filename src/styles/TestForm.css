@@ -111,5 +111,17 @@ code {
 }
 
 @media (max-width: 600px) {
-    width: 100%;
+
+    .timer{
+        margin-top: 60px;
+        margin-left: 100px;
+    }
+
+    .form-body {
+        font-family: Arial, sans-serif;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        width: 370px;
+    }
 }
