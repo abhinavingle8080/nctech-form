@@ -4,14 +4,17 @@ import {CountdownCircleTimer} from 'react-countdown-circle-timer';
 import emailjs from '@emailjs/browser';
 import axios from "axios";
 
+
 export default function TestForm() {
     const [timeRemaining, setTimeRemaining] = useState(600);
+    const [users, setUsers ] = useState([]);
     const [errors, setErrors] = useState({});
     const [isTimerStarted, setIsTimerStarted] = useState(false);
     const [isTimerOver, setIsTimerOver] = useState(false);
     const [isTestSeen, setIsTestSeen] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [pageVisible, setPageVisible] = useState(true);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -48,7 +51,13 @@ export default function TestForm() {
         setFormData({...formData, [name]: value});
 
         validateField(name, value);
-    }
+        if (errors[name]) {
+            setErrors({ ...errors, [name]: '' });
+          }
+    };
+ 
+
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsTestSeen(false);
@@ -64,13 +73,13 @@ export default function TestForm() {
         alert('Form submitted. Time remaining: ' + timeRemaining);
         console.log('Form submitted. Time remaining: ' + timeRemaining);
         try {
-            const response = await axios.post('https://sheetdb.io/api/v1/wp69umkzughtj', formData, {
+            const response = await axios.post('https://sheetdb.io/api/v1/4h45jinzc2j7w', formData, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-            });
+            })
 
-            if (response.status === 201) {
+            if (response.status === 201 || response.status === 200) {
                 console.log('Submission successful');
                 setIsSubmitted(true);
                 setPageVisible(false);
@@ -84,10 +93,57 @@ export default function TestForm() {
     };
 
 
-    const startTimer = () => {
-        setIsTestSeen(true);
-        setIsTimerStarted(true);
+    const isValidUser = async () => {
+        try {
+            const response = await axios.get('https://sheetdb.io/api/v1/4h45jinzc2j7w', formData, {
+                headers: {
+
+                    
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (response.status === 200) {
+                const users = response.data; 
+            
+
+                for (const user of users) {
+                  if (user.email === formData.email) {
+
+                    alert('Response already submitted as ' + formData.email);
+                    setIsSubmitted(true);
+                    setIsLoggedIn(false);
+                    return false; 
+                  }
+                }
+                return true;
+            } else {
+                console.error('fetching Users Failed');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        
+        }
+    }
+
+    const startTimer = async () => {
+const userCheck = await isValidUser();
+console.log(userCheck);
+        if(userCheck){
+            setIsLoggedIn(true);
+            const validationErrors = validateField();
+
+            if (Object.keys(validationErrors).length === 0) {
+              
+              alert('Test Started');
+              setIsTestSeen(true);
+              setIsTimerStarted(true);
+            } else {
+              setErrors(validationErrors);
+        }
+        }
     };
+ 
 
     const onTick = () => {
 
@@ -136,29 +192,29 @@ export default function TestForm() {
             });
     };
 
-    const validateField = (name, value) => {
-        let error = "";
-        switch (name) {
-            case "name":
-                if (value.trim() === "") {
-                    error = "Name is required";
-                }
-                break;
-            case "email":
-                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-                    error = "Enter a Valid email";
-                }
-                break;
-            case "contact":
-                if (value.trim() === "") {
-                    error = "contact is required";
-                }
-                break;
-            default:
-                break;
-        }
-        setErrors({ ...errors, [name]: error });
-    };
+    const validateField = () => {
+    const errors = {};
+
+    if (formData.name.trim() === '') {
+      errors.name = 'Name is required';
+    } else if (!/^[A-Za-z\s]+$/.test(formData.name)) {
+      errors.name = 'Name should only contain letters and spaces';
+    }
+
+    if (formData.contact.trim() === '') {
+      errors.contact = 'contact number is required';
+    } else if (!/^\d{10}$/.test(formData.contact)) {
+      errors.contact = 'contact number must be 10 digits';
+    }
+
+    if (formData.email.trim() === '') {
+      errors.email = 'Email is required';
+    } else if (!/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(formData.email)) {
+      errors.email = 'Invalid email format';
+    }
+
+    return errors;
+  };
 
     return (
         <>
@@ -186,29 +242,32 @@ export default function TestForm() {
 
             <div className="form-body">
                 <form className="form">
-                    {pageVisible && (
-                        <div className="student-info">
-                        <label htmlFor="name">Name:</label>
-                        <input type="text" id="name" name="name" onChange={handleChange} value={formData.name} required/>
-                            {errors.name && (
-                                <div className="error">{errors.name}</div>
-                            )}
-                        <label htmlFor="email">Email:</label>
-                        <input type="text" id="email" name="email" onChange={handleChange} value={formData.email} required/>
-                            {errors.email && (
-                                <div className="error">{errors.email}</div>
-                            )}
-                        <label htmlFor="contact">Contact No.:</label>
-                        <input type="text" id="contact" name="contact" onChange={handleChange}
-                               value={formData.contact} required/>
-                            {errors.contact && (
-                                <div className="error">{errors.contact}</div>
-                            )}
-                        <div className="nav-btn">
-                            <button type="button" className="next-btn" onClick={startTimer}>Start Test</button>
-                        </div>
-                    </div>)}
-
+                    {pageVisible && !isLoggedIn && (
+    <> 
+      <div className="student-info">
+        <label htmlFor="name">Name:</label>
+        <input type="text" id="name" name="name" onChange={handleChange} value={formData.name} required/>
+        {errors.name && (
+          <div className="error">{errors.name}</div>
+        )}
+        <label htmlFor="email">Email:</label>
+        <input type="text" id="email" name="email" onChange={handleChange} value={formData.email} required/>
+        {errors.email && (
+          <div className="error">{errors.email}</div>
+        )}
+        <label htmlFor="contact">Contact No.:</label>
+        <input type="text" id="contact" name="contact" onChange={handleChange} value={formData.contact} required/>
+        {errors.contact && (
+          <div className="error">{errors.contact}</div>
+        )}
+        <div className="nav-btn">
+          <button type="button" className="next-btn" onClick={startTimer} disabled={isLoggedIn}>Start Test</button>
+        </div>
+      </div>
+    </>
+    
+  )}
+  
                     {isTestSeen && (
                         <>
                         <div className="c-questions">
